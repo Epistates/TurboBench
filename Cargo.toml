@@ -1,0 +1,83 @@
+[package]
+name = "turbobench"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89.0"
+description = "MCP server benchmarking proxy — measure latency, token usage, and compare MCP servers"
+license = "MIT"
+repository = "https://github.com/nickpaterno/turbobench"
+readme = "README.md"
+keywords = ["mcp", "benchmark", "proxy", "latency", "modelcontextprotocol"]
+categories = ["development-tools::profiling", "command-line-utilities"]
+
+[[bin]]
+name = "turbobench"
+path = "src/main.rs"
+
+[dependencies]
+# TurboMCP — proxy crate for all transport support
+turbomcp-proxy = { version = "3.0.8", default-features = false, features = [
+    "introspection",
+    "runtime",
+] }
+turbomcp-protocol = { version = "3.0.8" }
+turbomcp-transport = { version = "3.0.8", features = [
+    "stdio",
+    "http",
+    "tcp",
+    "websocket",
+] }
+
+[target.'cfg(unix)'.dependencies]
+turbomcp-transport = { version = "3.0.8", features = ["unix"] }
+
+[dependencies.tokio]
+version = "1.50"
+features = ["rt-multi-thread", "macros", "io-util", "signal", "process", "sync", "time"]
+
+[dependencies.clap]
+version = "4"
+features = ["derive"]
+
+[dependencies.serde]
+version = "1"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "1"
+
+[dependencies.toml]
+version = "0.8"
+
+[dependencies.chrono]
+version = "0.4"
+features = ["serde"]
+
+[dependencies.comfy-table]
+version = "7"
+
+[dependencies.colored]
+version = "2"
+
+[dependencies.tracing]
+version = "0.1"
+
+[dependencies.tracing-subscriber]
+version = "0.3"
+features = ["env-filter"]
+
+[dependencies.uuid]
+version = "1"
+features = ["v4"]
+
+[dependencies.axum]
+version = "0.8"
+features = ["ws"]
+
+[dependencies.tower-http]
+version = "0.6"
+features = ["cors", "timeout", "limit"]
+
+[profile.release]
+lto = "thin"
+strip = true
